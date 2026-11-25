@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Closing the Loop – Hostel Complaint Tracker</title>
+<style>
+:root{--bg:#f2f6fc;--card:#fff;--ink:#1c2a44;--mute:#65728b;--line:#e0e7f1;--pri:#3768e8;--prisoft:#e8eefd;--pritext:#fff;--s0:#6b7a99;--s1:#3768e8;--s2:#c77a0a;--s3:#1f9d6b;--soft0:#eceff5;--soft1:#e8eefd;--soft2:#fdf0d9;--soft3:#dff4ea;--sh:0 4px 18px rgba(40,70,130,.08);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1626;--card:#18223a;--ink:#e6ecf8;--mute:#93a1bd;--line:#2a3654;--pri:#6f98ff;--prisoft:#1f2d52;--pritext:#0b1430;--s0:#9aa8c4;--s1:#6f98ff;--s2:#f0b45a;--s3:#4cd1a0;--soft0:#222d48;--soft1:#1f2d52;--soft2:#3a2f18;--soft3:#17382e;--sh:none}}
+:root[data-theme="dark"]{--bg:#0f1626;--card:#18223a;--ink:#e6ecf8;--mute:#93a1bd;--line:#2a3654;--pri:#6f98ff;--prisoft:#1f2d52;--pritext:#0b1430;--s0:#9aa8c4;--s1:#6f98ff;--s2:#f0b45a;--s3:#4cd1a0;--soft0:#222d48;--soft1:#1f2d52;--soft2:#3a2f18;--soft3:#17382e;--sh:none}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Avenir Next",Nunito,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+h1,h2,h3{margin:0;line-height:1.25}h2{font-size:1.5rem}h3{font-size:1.05rem}
+.wrap{max-width:920px;margin:0 auto;padding:14px 16px 48px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0 14px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem}
+.logo{width:38px;height:38px;border-radius:12px;background:var(--pri);color:var(--pritext);display:grid;place-items:center;font-size:1.2rem}
+.user{display:flex;align-items:center;gap:10px;color:var(--mute);font-size:.9rem}
+.steps{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px}
+.steps button{flex:1 0 auto;min-width:118px;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 12px;font:inherit;font-size:.88rem;color:var(--mute);cursor:pointer;text-align:left}
+.steps i{font-style:normal;width:24px;height:24px;border-radius:50%;background:var(--soft0);display:grid;place-items:center;font-weight:700;font-size:.8rem;flex:none}
+.steps button.on{border-color:var(--pri);color:var(--ink);font-weight:700;background:var(--prisoft)}
+.steps button.on i{background:var(--pri);color:var(--pritext)}
+main{margin-top:8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:var(--sh)}
+.sub{color:var(--mute);margin:4px 0 18px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+.stat{border-radius:16px;padding:16px 18px;border:1px solid var(--line);background:var(--card)}
+.stat b{display:block;font-size:2rem;line-height:1.1}.stat span{color:var(--mute);font-size:.9rem}
+.stat.t{border-left:6px solid var(--s1)}.stat.p{border-left:6px solid var(--s2)}.stat.r{border-left:6px solid var(--s3)}
+.cta{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;background:var(--pri);color:var(--pritext);border-radius:16px;padding:20px 22px}
+.cta p{margin:2px 0 0;opacity:.9}
+.btn{background:var(--pri);color:var(--pritext);border:0;border-radius:10px;padding:11px 20px;font:inherit;font-weight:700;cursor:pointer}
+.cta .btn{background:var(--card);color:var(--pri)}
+.btn.alt{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.btn.good{background:var(--s3);color:#fff}.btn.bad{background:var(--card);color:var(--s2);border:2px solid var(--s2)}
+.btn.sm{padding:6px 14px;font-size:.85rem}
+:focus-visible{outline:3px solid var(--s2);outline-offset:2px}
+.row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.row:first-of-type{border-top:0}.row .m{flex:1;min-width:180px}.row small{color:var(--mute)}
+.b{display:inline-block;padding:3px 11px;border-radius:999px;font-size:.8rem;font-weight:700}
+.b.s0{background:var(--soft0);color:var(--s0)}.b.s1{background:var(--soft1);color:var(--s1)}.b.s2{background:var(--soft2);color:var(--s2)}.b.s3{background:var(--soft3);color:var(--s3)}
+label{display:block;font-weight:700;font-size:.9rem;margin:16px 0 6px}
+input,select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:11px 12px}
+textarea{min-height:92px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cat{background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:12px 6px;font:inherit;color:var(--ink);cursor:pointer;text-align:center}
+.cat span{display:block;font-size:1.5rem}.cat[aria-pressed=true]{border-color:var(--pri);background:var(--prisoft);font-weight:700}
+.err{color:var(--s2);font-weight:600;min-height:1.3em;margin-top:10px}
+.note{background:var(--prisoft);border-radius:12px;padding:12px 14px;margin:14px 0}
+.note.ok{background:var(--soft3)}.note.warn{background:var(--soft2)}
+.find{display:flex;gap:10px}.find input{flex:1}
+.hint{color:var(--mute);font-size:.85rem;margin-top:8px}
+.hint a{color:var(--pri);cursor:pointer;font-weight:700;margin-right:8px}
+.trk{list-style:none;display:flex;padding:0;margin:22px 0 10px}
+.trk li{flex:1;text-align:center;position:relative;font-size:.85rem;color:var(--mute)}
+.trk li::before{content:"";position:absolute;top:15px;left:-50%;width:100%;height:4px;background:var(--line)}
+.trk li:first-child::before{display:none}
+.trk li.d::before,.trk li.c::before{background:var(--s3)}
+.trk i{position:relative;z-index:1;display:grid;place-items:center;width:34px;height:34px;margin:0 auto 6px;border-radius:50%;background:var(--card);border:3px solid var(--line);font-style:normal;font-weight:700}
+.trk li.d i{background:var(--s3);border-color:var(--s3);color:#fff}
+.trk li.c i{border-color:var(--s2);background:var(--soft2);color:var(--s2)}
+.trk li.d,.trk li.c{color:var(--ink)}.trk b{display:block}
+dl{display:grid;grid-template-columns:120px 1fr;gap:6px 12px;margin:14px 0}dt{color:var(--mute)}dd{margin:0}
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}.choice .btn{padding:16px;font-size:1rem}
+.stars{display:flex;gap:2px}.stars button{background:none;border:0;font-size:2.2rem;line-height:1;color:var(--line);cursor:pointer;padding:2px}.stars button.on{color:#f2b705}
+.mid{text-align:center;padding:14px 0}.mid .em{font-size:3rem}
+.login{max-width:420px;margin:6vh auto 0}.login .logo{width:54px;height:54px;font-size:1.7rem;margin-bottom:12px}
+.empty{text-align:center;padding:26px 0;color:var(--mute)}
+@media(max-width:600px){.grid,.two,.choice{grid-template-columns:1fr}.cats{grid-template-columns:1fr 1fr}dl{grid-template-columns:1fr}.card{padding:18px}.user span{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+:root{--g1:#e3ecff;--g2:#f3e6ff;--g3:#ffe9d9;--grad:linear-gradient(135deg,#3f6cf6,#8b5cf6 55%,#ff6a8a)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--g1:#0f1a3a;--g2:#241442;--g3:#35192b}}
+:root[data-theme="dark"]{--g1:#0f1a3a;--g2:#241442;--g3:#35192b}
+body{background:linear-gradient(160deg,var(--g1),var(--g2) 55%,var(--g3)) fixed;min-height:100vh}
+.logo{background:var(--grad);color:#fff}
+.btn{background:var(--grad);color:#fff}
+.btn.good{background:linear-gradient(135deg,#12b886,#38d9a9);color:#fff}
+.card{background:var(--grad) top/100% 5px no-repeat,var(--card)}
+.cta{background:var(--grad);color:#fff;box-shadow:0 10px 26px rgba(139,92,246,.3)}
+.cta .btn{background:#fff;color:#5b3fe0}
+.stat{border:0;color:#fff}.stat span{color:#fff;font-weight:600}
+.stat.t{background:linear-gradient(135deg,#3f6cf6,#5fa8ff)}
+.stat.p{background:linear-gradient(135deg,#f76707,#ff922b)}
+.stat.r{background:linear-gradient(135deg,#0ca678,#51cf9e)}
+.steps button:nth-child(1) i{background:#3f6cf6;color:#fff}
+.steps button:nth-child(2) i{background:#8b5cf6;color:#fff}
+.steps button:nth-child(3) i{background:#f76707;color:#fff}
+.steps button:nth-child(4) i{background:#12b886;color:#fff}
+.steps button:nth-child(5) i{background:#e64980;color:#fff}
+.steps button.on{border-color:#8b5cf6;box-shadow:0 4px 14px rgba(139,92,246,.25)}
+.cats .cat:nth-child(1){--c:#f5a700}.cats .cat:nth-child(2){--c:#2f8cff}.cats .cat:nth-child(3){--c:#1fb57a}.cats .cat:nth-child(4){--c:#9b5cf6}.cats .cat:nth-child(5){--c:#14b8c4}.cats .cat:nth-child(6){--c:#ff5c8a}
+.cat{border-color:var(--c);background:color-mix(in srgb,var(--c) 14%,var(--card))}
+.cat[aria-pressed=true]{background:var(--c);border-color:var(--c);color:#fff}
+.note{background:var(--soft1);border-left:5px solid var(--s1)}.note.ok{background:var(--soft3);border-left-color:var(--s3)}.note.warn{background:var(--soft2);border-left-color:var(--s2)}
+.row:hover{background:var(--soft1);border-radius:10px}
+</style>
+</head>
+<body>
+<div class="wrap"><div id="app"></div></div>
+<script>
+var ST=[["Submitted","We received your complaint"],["Assigned","Given to a maintenance staff member"],["In Progress","Work is under way"],["Resolved","Staff marked it as fixed"]];
+var CATS=[["Electricity","💡"],["Plumbing","🚰"],["Cleaning","🧹"],["Furniture","🪑"],["Wi-Fi","📶"],["Other","🛠️"]];
+var STEPS=[["dash","Dashboard"],["new","New complaint"],["track","Track"],["confirm","Confirm repair"],["feedback","Feedback"]];
+var AT={dash:0,new:1,done:1,track:2,confirm:3,feedback:4};
+var S={user:"",screen:"login",cur:null,cat:"",rate:0,reopen:false,thanks:false,flash:"",seq:1005,list:[
+{id:"HM-1001",cat:"Electricity",block:"B",room:"214",desc:"Ceiling fan stops after a few minutes.",status:1},
+{id:"HM-1002",cat:"Plumbing",block:"B",room:"214",desc:"Washroom tap is leaking.",status:2},
+{id:"HM-1003",cat:"Cleaning",block:"B",room:"214",desc:"Corridor outside my room is not cleaned.",status:3},
+{id:"HM-1004",cat:"Wi-Fi",block:"B",room:"214",desc:"No Wi-Fi signal in the room.",status:3,closed:true,rate:4,fb:"Quick fix."}]};
+function h(x){return String(x==null?"":x).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function $(i){return document.getElementById(i)}
+function get(id){return S.list.filter(function(c){return c.id===id})[0]}
+function badge(c){return '<span class="b s'+c.status+'">'+ST[c.status][0]+'</span>'+(c.re&&c.status<3?' <span class="b s2">Reopened</span>':'')}
+function go(s){S.screen=s;S.reopen=false;S.thanks=false;draw();window.scrollTo(0,0)}
+function draw(){
+ var a=$("app");
+ if(S.screen==="login"){a.innerHTML=vLogin();return}
+ var nav=STEPS.map(function(p,i){return '<button data-act="go" data-to="'+p[0]+'" class="'+(AT[S.screen]===i?"on":"")+'"'+(AT[S.screen]===i?' aria-current="step"':'')+'><i>'+(i+1)+'</i>'+p[1]+'</button>'}).join("");
+ a.innerHTML='<div class="top"><div class="brand"><div class="logo">🔁</div>Closing the Loop</div><div class="user"><span>Signed in as <b>'+h(S.user)+'</b></span><button class="btn alt sm" data-act="logout">Log out</button></div></div><div class="steps" role="navigation" aria-label="Steps">'+nav+'</div><main>'+({dash:vDash,"new":vNew,done:vDone,track:vTrack,confirm:vConfirm,feedback:vFeed}[S.screen])()+'</main>'}
+function vLogin(){return '<div class="login card"><div class="logo">🔁</div><h2>Closing the Loop</h2><p class="sub">Hostel maintenance complaints, tracked from report to confirmed fix. Log in to continue.</p><label for="uid">Student ID</label><input id="uid" placeholder="e.g. 2026CS101" autocomplete="off"><label for="pw">Password</label><input id="pw" type="password" placeholder="Your password"><div class="err" id="err"></div><button class="btn" data-primary data-act="login" style="width:100%;margin-top:6px">Log in</button><p class="hint">Prototype: enter any student ID and password.</p></div>'}
+function vDash(){
+ var t=S.list.length,p=S.list.filter(function(c){return c.status<3}).length,r=t-p;
+ var rows=S.list.slice().reverse().map(function(c){return '<div class="row"><div class="m"><b>'+c.id+' · '+h(c.cat)+'</b><br><small>'+h(c.desc)+'</small></div>'+badge(c)+'<button class="btn alt sm" data-act="open" data-id="'+c.id+'">Track</button></div>'}).join("");
+ return '<h2>Welcome, '+h(S.user)+'</h2><p class="sub">Here is where your complaints stand today.</p><div class="cta"><div><h3>Something broken in your room?</h3><p>Report it in under a minute.</p></div><button class="btn" data-act="go" data-to="new">Submit a new complaint</button></div><div class="grid"><div class="stat t"><b>'+t+'</b><span>Total complaints</span></div><div class="stat p"><b>'+p+'</b><span>Pending complaints</span></div><div class="stat r"><b>'+r+'</b><span>Resolved complaints</span></div></div><div class="card"><h3>Your complaints</h3>'+rows+'</div>'}
+function vNew(){
+ var c=CATS.map(function(x){return '<button type="button" class="cat" data-act="cat" data-v="'+x[0]+'" aria-pressed="'+(S.cat===x[0])+'"><span>'+x[1]+'</span>'+x[0]+'</button>'}).join("");
+ return '<div class="card"><h2>Submit a new complaint</h2><p class="sub">Tell us what is wrong and where.</p><label>Complaint category</label><div class="cats">'+c+'</div><div class="two"><div><label for="blk">Hostel block</label><select id="blk"><option>A</option><option selected>B</option><option>C</option><option>D</option></select></div><div><label for="room">Room number</label><input id="room" value="214" inputmode="numeric"></div></div><label for="desc">Problem description</label><textarea id="desc" placeholder="Describe the problem, for example: the bathroom light does not turn on."></textarea><label for="photo">Upload photograph (optional)</label><input id="photo" type="file" accept="image/*"><div class="err" id="err"></div><button class="btn" data-primary data-act="submit">Submit complaint</button></div>'}
+function vDone(){var c=get(S.cur);return '<div class="card mid"><div class="em">🎉</div><h2>Complaint submitted</h2><p class="sub">Save your complaint ID to track it later.</p><div class="note" style="display:inline-block;font-size:1.8rem;font-weight:800">'+c.id+'</div><dl style="max-width:340px;margin:10px auto;text-align:left"><dt>Category</dt><dd>'+h(c.cat)+'</dd><dt>Location</dt><dd>Block '+c.block+', room '+h(c.room)+'</dd><dt>Photo</dt><dd>'+h(c.photo||"None")+'</dd></dl><button class="btn" data-act="open" data-id="'+c.id+'">Track this complaint</button> <button class="btn alt" data-act="go" data-to="dash">Back to dashboard</button></div>'}
+function vTrack(){
+ var c=get(S.cur),q=c?c.id:"",ex=S.list.slice(0,3).map(function(x){return '<a data-act="open" data-id="'+x.id+'">'+x.id+'</a>'}).join("");
+ var out="";
+ if(S.cur&&!c)out='<div class="note warn">No complaint found with that ID. Check the ID and try again.</div>';
+ if(c){
+  var steps=ST.map(function(s,i){var k=i<c.status||c.status===3?"d":(i===c.status?"c":"");return '<li class="'+k+'"><i>'+(k==="d"?"✓":i+1)+'</i><b>'+s[0]+'</b>'+s[1]+'</li>'}).join("");
+  var act="";
+  if(c.status<3)act='<button class="btn alt" data-act="adv" data-id="'+c.id+'">Demo: staff updates the status</button><p class="hint">In the live system, maintenance staff update this and you see it here.</p>';
+  else if(!c.closed)act='<div class="note ok"><b>Update:</b> maintenance staff marked this complaint as Resolved. Please check and let us know.</div><button class="btn good" data-act="go" data-to="confirm">Confirm the repair</button>';
+  else act='<div class="note ok">This complaint is closed. '+(c.rate?'Thanks for your feedback.':'<a data-act="go" data-to="feedback" style="color:var(--pri);font-weight:700;cursor:pointer">Rate the service</a>')+'</div>';
+  out=(S.flash?'<div class="note warn">'+S.flash+'</div>':'')+'<div class="card" style="margin-top:14px"><h3>'+c.id+' '+badge(c)+'</h3><ol class="trk">'+steps+'</ol><dl><dt>Category</dt><dd>'+h(c.cat)+'</dd><dt>Location</dt><dd>Block '+c.block+', room '+h(c.room)+'</dd><dt>Problem</dt><dd>'+h(c.desc)+'</dd></dl>'+act+'</div>'}
+ return '<div class="card"><h2>Track your complaint</h2><p class="sub">Enter your complaint ID to see its latest status.</p><div class="find"><input id="qid" value="'+h(q)+'" placeholder="e.g. HM-1002" aria-label="Complaint ID"><button class="btn" data-primary data-act="find">Track</button></div><p class="hint">Try: '+ex+'</p></div>'+out}
+function vConfirm(){
+ var c=get(S.cur);if(!c||c.status<3||c.closed){c=S.list.filter(function(x){return x.status===3&&!x.closed})[0];if(c)S.cur=c.id}
+ if(!c)return '<div class="card empty"><div style="font-size:2.5rem">🕐</div><h3>Nothing to confirm yet</h3><p>When staff mark a complaint as Resolved, you will be asked to confirm here.</p><button class="btn" data-act="go" data-to="track">Track a complaint</button></div>';
+ var body=S.reopen?'<label for="why">What is still wrong? (optional)</label><textarea id="why" placeholder="e.g. The tap still drips at night."></textarea><button class="btn bad" data-act="reopen" style="margin-top:14px">Reopen complaint</button> <button class="btn alt" data-act="cancel" style="margin-top:14px">Go back</button>':'<div class="choice"><button class="btn good" data-act="yes">✓ Yes, the problem is fixed</button><button class="btn bad" data-act="no">✗ No, the problem is still there</button></div>';
+ return '<div class="card"><h2>Is the problem fixed?</h2><p class="sub">Maintenance staff marked '+c.id+' as Resolved.</p><div class="note ok"><b>Update received:</b> “Checked and repaired. Please test and confirm.”</div><dl><dt>Category</dt><dd>'+h(c.cat)+'</dd><dt>Location</dt><dd>Block '+c.block+', room '+h(c.room)+'</dd><dt>Problem</dt><dd>'+h(c.desc)+'</dd></dl>'+body+'</div>'}
+function vFeed(){
+ var c=get(S.cur);if(!c||!c.closed||(c.rate&&!S.thanks)){c=S.list.filter(function(x){return x.closed&&!x.rate})[0];if(c)S.cur=c.id}
+ if(S.thanks&&c===undefined)c=get(S.cur);
+ if(S.thanks)return '<div class="card mid"><div class="em">🙏</div><h2>Thank you!</h2><p class="sub">Your feedback helps us improve hostel maintenance.</p><button class="btn" data-act="go" data-to="dash">Back to dashboard</button></div>';
+ if(!c)return '<div class="card empty"><div style="font-size:2.5rem">⭐</div><h3>No repair to review</h3><p>Once you confirm a repair, you can rate the service here.</p><button class="btn" data-act="go" data-to="dash">Back to dashboard</button></div>';
+ var st=[1,2,3,4,5].map(function(n){return '<button type="button" data-act="star" data-n="'+n+'" class="'+(n<=S.rate?"on":"")+'" aria-label="'+n+' star'+(n>1?"s":"")+'">★</button>'}).join("");
+ return '<div class="card"><h2>Rate the service</h2><p class="sub">Your repair for '+c.id+' ('+h(c.cat)+') is confirmed. How did we do?</p><label>Your rating</label><div class="stars" id="stars">'+st+'</div><label for="fb">Feedback</label><textarea id="fb" placeholder="How was the repair and the staff?"></textarea><label for="sug">Suggestions</label><textarea id="sug" placeholder="How can we make the hostel better?"></textarea><div class="err" id="err"></div><button class="btn" data-act="send">Submit feedback</button></div>'}
+document.addEventListener("click",function(e){
+ var t=e.target.closest("[data-act]");if(!t)return;var a=t.dataset.act,c;
+ if(a==="login"){var u=$("uid").value.trim();if(!u||!$("pw").value)return $("err").textContent="Enter your student ID and password.";S.user=u;go("dash")}
+ else if(a==="logout"){S.user="";S.screen="login";draw()}
+ else if(a==="go"){go(t.dataset.to)}
+ else if(a==="cat"){S.cat=t.dataset.v;document.querySelectorAll(".cat").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.v===S.cat)})}
+ else if(a==="submit"){var r=$("room").value.trim(),d=$("desc").value.trim();
+  if(!S.cat)return $("err").textContent="Choose a complaint category.";
+  if(!r)return $("err").textContent="Enter your room number.";
+  if(d.length<10)return $("err").textContent="Describe the problem in a few more words.";
+  var f=$("photo").files[0];c={id:"HM-"+(S.seq++),cat:S.cat,block:$("blk").value,room:r,desc:d,status:0,photo:f?f.name:""};
+  S.list.push(c);S.cur=c.id;S.cat="";go("done")}
+ else if(a==="open"){S.cur=t.dataset.id;S.flash="";go("track")}
+ else if(a==="find"){var id=$("qid").value.trim().toUpperCase();S.cur=id||null;S.flash="";draw()}
+ else if(a==="adv"){c=get(t.dataset.id);c.status++;draw()}
+ else if(a==="yes"){c=get(S.cur);c.closed=true;S.rate=0;go("feedback")}
+ else if(a==="no"){S.reopen=true;draw()}
+ else if(a==="cancel"){S.reopen=false;draw()}
+ else if(a==="reopen"){c=get(S.cur);c.status=1;c.re=(c.re||0)+1;c.why=$("why").value;S.flash="Complaint "+c.id+" has been reopened and sent back to maintenance staff.";go("track")}
+ else if(a==="star"){S.rate=+t.dataset.n;document.querySelectorAll("#stars button").forEach(function(b){b.classList.toggle("on",+b.dataset.n<=S.rate)})}
+ else if(a==="send"){if(!S.rate)return $("err").textContent="Tap a star to rate the service.";
+  c=get(S.cur);c.rate=S.rate;c.fb=$("fb").value;c.sug=$("sug").value;S.thanks=true;draw()}
+});
+document.addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target.tagName==="INPUT"&&e.target.type!=="file"){var b=document.querySelector("[data-primary]");if(b)b.click()}});
+draw();
+</script>
+</body>
+</html>
